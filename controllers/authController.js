@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const { generateJWT } = require("../jwt");
 
 const signUp = async (req, res) => {
 
@@ -52,6 +53,7 @@ const login = async (req, res) => {
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
+        
 
         if (!isMatch) {
             return res.status(400).json({
@@ -59,9 +61,14 @@ const login = async (req, res) => {
             });
         }
 
+        const token = generateJWT({
+        id: user._id
+
+        });
+
         res.status(200).json({
-            message: "Login Successful",
-            data: user
+            message:"Login Successful",
+            token: token
         });
 
     } catch (error) {
