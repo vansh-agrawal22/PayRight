@@ -30,7 +30,30 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    
+    bankName:{
+        type:String,
+    },
+    accountNumber:{
+        type:String,
+    },
+    accountHolderName:{
+        type:String,
+    },
+    ifscCode:{
+        type:String,
+    },
+    address:{
+        type:String,
+    },  
+    pincode:{
+        type:String,
+    },  
+    accountBalance:{
+        type:Number,
+        default:0 
+       }
 
 });
 

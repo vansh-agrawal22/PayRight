@@ -80,4 +80,80 @@ const login = async (req, res) => {
     }
 };
 
-module.exports = { signUp, login };
+const addBankDetails = async (req, res) => {
+
+    try {
+
+        const {
+            bankName,
+            accountHolderName,
+            accountNumber,
+            ifscCode,
+            address,
+            pincode
+        } = req.body;
+
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        user.bankName = bankName;
+        user.accountHolderName = accountHolderName;
+        user.accountNumber = accountNumber;
+        user.ifscCode = ifscCode;
+        user.address = address;
+        user.pincode = pincode;
+
+        // Give ₹10,000 virtual balance
+       if(user.accountBalance === 0){
+       user.accountBalance = 10000;
+       }
+
+        await user.save();
+
+        res.status(200).json({
+            message: "Bank details added successfully",
+            balance: user.accountBalance,
+            data: user
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            message: error.message
+        });
+
+    }
+
+};
+
+const searchUser = async (req, res) => {
+
+    try {
+
+        const query = req.query.query;
+
+        const users = await User.find({
+            $or: [
+                { firstName: { $regex: query, $options: "i" } },
+                { phoneNumber: { $regex: query, $options: "i" } }
+            ]
+        }).select("firstName lastName phoneNumber email");
+
+        res.status(200).json(users);
+
+    } catch (error) {
+
+        res.status(500).json({
+            message: error.message
+        });
+
+    }
+
+};
+
+module.exports = { signUp, login , addBankDetails, searchUser};
