@@ -4,6 +4,10 @@ const authRoutes = require("./routes/authRoutes");
 require("dotenv").config();
 
 const app = express();
+
+const path = require("path");
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 const PORT = process.env.PORT || 8080;
 
 // middleware
